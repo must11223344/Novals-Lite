@@ -6,22 +6,35 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Lightbulb, Loader2, Sparkles, PencilRuler, Image as ImageIcon, Upload } from 'lucide-react';
+import { Lightbulb, Loader2, Sparkles, PencilRuler, Image as ImageIcon, Upload, Bot } from 'lucide-react';
 import { suggestStoryTitle } from '@/ai/flows/suggest-story-title';
 import { contentContinuation } from '@/ai/flows/content-continuation';
 import { improveWriting } from '@/ai/flows/improve-writing';
+import { generateStoryThumbnails } from '@/ai/flows/generate-thumbnail';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
 
 export function WritingEditor() {
   const [isSuggestingTitle, setIsSuggestingTitle] = useState(false);
   const [isContinuing, setIsContinuing] = useState(false);
   const [isImproving, setIsImproving] = useState(false);
+  const [isGeneratingThumbnails, setIsGeneratingThumbnails] = useState(false);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [content, setContent] = useState('');
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const [generatedThumbnails, setGeneratedThumbnails] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { toast } = useToast();
@@ -106,6 +119,34 @@ export function WritingEditor() {
       setIsImproving(false);
     }
   };
+  
+  const handleGenerateThumbnails = async () => {
+    setIsGeneratingThumbnails(true);
+    setGeneratedThumbnails([]);
+    if (!title || !description) {
+        toast({
+            title: 'Title or description is empty',
+            description: 'Please provide a title and description before generating thumbnails.',
+            variant: 'destructive',
+        });
+        setIsGeneratingThumbnails(false);
+        return;
+    }
+    try {
+        const result = await generateStoryThumbnails({ title, description });
+        setGeneratedThumbnails(result.thumbnails);
+        toast({ title: 'Thumbnails generated successfully!' });
+    } catch (error) {
+        console.error(error);
+        toast({
+            title: 'Error generating thumbnails',
+            description: 'An unexpected error occurred.',
+            variant: 'destructive',
+        });
+    } finally {
+        setIsGeneratingThumbnails(false);
+    }
+  };
 
   const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -118,7 +159,7 @@ export function WritingEditor() {
     }
   };
 
-  const isAiBusy = isSuggestingTitle || isContinuing || isImproving;
+  const isAiBusy = isSuggestingTitle || isContinuing || isImproving || isGeneratingThumbnails;
 
   return (
     <Card className="w-full max-w-4xl mx-auto shadow-lg">
@@ -141,20 +182,65 @@ export function WritingEditor() {
             <div className="space-y-2">
                  <Label htmlFor="thumbnail" className="text-lg font-semibold">Thumbnail</Label>
                  <div 
-                    className="aspect-video w-full rounded-md border-2 border-dashed border-border flex items-center justify-center cursor-pointer bg-muted/50 hover:bg-muted/80 transition-colors"
-                    onClick={() => fileInputRef.current?.click()}
+                    className="aspect-[9/16] w-full rounded-md border-2 border-dashed border-border flex items-center justify-center cursor-pointer bg-muted/50 hover:bg-muted/80 transition-colors relative group"
                   >
                     {thumbnailPreview ? (
-                      <Image src={thumbnailPreview} alt="Thumbnail preview" width={300} height={169} className="object-cover h-full w-full rounded-md" />
+                      <Image src={thumbnailPreview} alt="Thumbnail preview" fill className="object-cover rounded-md" />
                     ) : (
                       <div className="text-center text-muted-foreground p-4">
                         <ImageIcon className="mx-auto h-12 w-12" />
-                        <p className="mt-2 text-sm">Click to upload an image</p>
-                        <p className="text-xs">Recommended: 16:9</p>
+                        <p className="mt-2 text-sm">Upload or generate an image</p>
                       </div>
                     )}
+                     <div 
+                        className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => fileInputRef.current?.click()}
+                     >
+                         <div className="text-white text-center">
+                            <Upload className="mx-auto h-8 w-8" />
+                            <p>Upload Image</p>
+                         </div>
+                     </div>
                  </div>
                  <Input ref={fileInputRef} id="thumbnail" type="file" className="hidden" accept="image/*" onChange={handleThumbnailChange} />
+                 
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button className="w-full" variant="outline" onClick={handleGenerateThumbnails} disabled={isGeneratingThumbnails}>
+                            {isGeneratingThumbnails ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Bot className="mr-2 h-4 w-4" />}
+                            Generate with AI
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl">
+                        <DialogHeader>
+                            <DialogTitle>Choose a Thumbnail</DialogTitle>
+                            <DialogDescription>Select one of the AI-generated thumbnails for your story.</DialogDescription>
+                        </DialogHeader>
+                        {isGeneratingThumbnails && (
+                             <div className="flex items-center justify-center h-96">
+                                <Loader2 className="h-16 w-16 animate-spin text-primary" />
+                             </div>
+                        )}
+                        {generatedThumbnails.length > 0 && (
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {generatedThumbnails.map((src, index) => (
+                                    <DialogClose key={index} asChild>
+                                        <div 
+                                            className="aspect-[9/16] relative rounded-md overflow-hidden cursor-pointer group border-2 border-transparent hover:border-primary"
+                                            onClick={() => setThumbnailPreview(src)}
+                                        >
+                                            <Image src={src} alt={`Generated Thumbnail ${index + 1}`} fill className="object-cover"/>
+                                             <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <p className="text-white font-bold">Select</p>
+                                             </div>
+                                        </div>
+                                    </DialogClose>
+                                ))}
+                            </div>
+                        )}
+                    </DialogContent>
+                </Dialog>
+
             </div>
         </div>
 
