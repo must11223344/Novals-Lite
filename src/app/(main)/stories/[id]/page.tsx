@@ -6,16 +6,35 @@ import { stories } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Bookmark } from 'lucide-react';
+import { Bookmark, CheckCircle } from 'lucide-react';
 import { useBookmarks } from '@/hooks/use-bookmarks';
 import { useAuth } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
+import { useEffect, useState } from 'react';
 
 export default function StoryPage({ params }: { params: { id: string } }) {
   const story = stories.find((s) => s.id === params.id);
   const { user } = useAuth();
   const { bookmarkedIds, toggleBookmark } = useBookmarks();
+  const { toast } = useToast();
+  const [hasBeenRead, setHasBeenRead] = useState(false);
+
+  useEffect(() => {
+    if (user && story) {
+      const readStories = JSON.parse(localStorage.getItem('read_stories') || '[]');
+      if (!readStories.includes(story.id)) {
+        readStories.push(story.id);
+        localStorage.setItem('read_stories', JSON.stringify(readStories));
+        setHasBeenRead(true);
+        toast({
+          title: 'Coins Earned!',
+          description: 'You earned 5 coins for reading this story.',
+        });
+      }
+    }
+  }, [user, story, toast]);
 
   if (!story) {
     notFound();

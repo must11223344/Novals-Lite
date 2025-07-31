@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/carousel';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
+import { AdPlaceholder } from '@/components/ad-placeholder';
 
 function StoryCarousel({ title, stories, moreLink = '#' }: { title: string; stories: any[]; moreLink?: string }) {
   return (
@@ -49,10 +50,13 @@ export default function HomePage() {
   const popularStories = [...stories].sort((a, b) => b.reads - a.reads).slice(0, 8);
 
   return (
-    <div className="container max-w-7xl py-8 space-y-12">
-      {user && <StoryCarousel title={`Continue Reading for ${user.name.split(' ')[0]}`} stories={continueReadingStories} />}
-      <StoryCarousel title="Top Picks for You" stories={topPicks} />
-      <StoryCarousel title="Popular on Pocket Novels" stories={popularStories} />
+    <div className="container max-w-7xl py-8 space-y-8">
+      <AdPlaceholder />
+      <div className="space-y-12">
+        {user && <StoryCarousel title={`Continue Reading for ${user.name.split(' ')[0]}`} stories={continueReadingStories} />}
+        <StoryCarousel title="Top Picks for You" stories={topPicks} />
+        <StoryCarousel title="Popular on Pocket Novels" stories={popularStories} />
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import type { User, Category, Story } from './types';
 export const mockUser: User = {
   id: '1',
   name: 'Alex Doe',
-  email: 'alex.doe@example.com',
+  email: 'admin@example.com',
   avatarUrl: 'https://placehold.co/100x100.png',
 };
 

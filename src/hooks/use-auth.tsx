@@ -4,6 +4,7 @@ import type { User } from '@/lib/types';
 import { mockUser } from '@/lib/data';
 import { useRouter } from 'next/navigation';
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { useToast } from './use-toast';
 
 interface AuthContextType {
   user: User | null;
@@ -18,6 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     try {
@@ -34,6 +36,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = () => {
+    const today = new Date().toDateString();
+    const lastLogin = localStorage.getItem('last_login_date');
+    if (lastLogin !== today) {
+       toast({
+          title: 'Daily Bonus!',
+          description: 'You earned 5 coins for logging in today.',
+        });
+       localStorage.setItem('last_login_date', today);
+    }
+    
     localStorage.setItem('ms-stories-user', JSON.stringify(mockUser));
     setUser(mockUser);
     router.push('/');

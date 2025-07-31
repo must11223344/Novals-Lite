@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bookmark, LogOut, User as UserIcon, Share2 } from 'lucide-react';
+import { Bookmark, LogOut, User as UserIcon, Share2, Shield } from 'lucide-react';
 
 export function UserNav() {
   const { user, logout } = useAuth();
@@ -45,6 +45,12 @@ export function UserNav() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+         <DropdownMenuItem asChild>
+          <Link href="/profile">
+            <UserIcon className="mr-2 h-4 w-4" />
+            <span>Profile</span>
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/bookmarks">
             <Bookmark className="mr-2 h-4 w-4" />
@@ -57,6 +63,14 @@ export function UserNav() {
             <span>Refer & Earn</span>
           </Link>
         </DropdownMenuItem>
+         {user.email === 'admin@example.com' && (
+          <DropdownMenuItem asChild>
+            <Link href="/admin">
+              <Shield className="mr-2 h-4 w-4" />
+              <span>Admin Panel</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout}>
           <LogOut className="mr-2 h-4 w-4" />

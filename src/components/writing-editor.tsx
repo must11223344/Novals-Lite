@@ -175,7 +175,7 @@ export function WritingEditor() {
 
     toast({
       title: 'Story Submitted!',
-      description: 'Your story has been sent for approval. Good luck!',
+      description: 'Your story has been sent for approval. You earned 10 coins!',
     });
 
     // Reset form
