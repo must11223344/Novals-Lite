@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -8,9 +9,31 @@ import { Search, Wallet } from 'lucide-react';
 import { ModeToggle } from './mode-toggle';
 import { UserNav } from './user-nav';
 import { useAuth } from '@/hooks/use-auth';
+import { useState, useEffect } from 'react';
 
 export function Header() {
   const { user } = useAuth();
+  const [coins, setCoins] = useState(250);
+
+  useEffect(() => {
+    // In a real app, you would fetch this from a database.
+    // For now, we'll use a static value and update it.
+    if (user) {
+        const lastLogin = localStorage.getItem('last_login_date');
+        const readStories = JSON.parse(localStorage.getItem(`read_stories_${user.id}`) || '[]');
+        
+        let baseCoins = 250;
+        if (lastLogin === new Date().toDateString()) {
+             baseCoins += 0; // Already added for today
+        }
+
+        const coinFromReads = readStories.length * 5;
+        // This is a simplified calculation. A real app would track this on the server.
+        setCoins(baseCoins + coinFromReads);
+    }
+  }, [user]);
+
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-7xl items-center gap-4">
@@ -26,7 +49,7 @@ export function Header() {
           <Button variant="outline" asChild>
             <Link href="/wallet">
               <Wallet className="mr-2 h-4 w-4" />
-              <span>250 Coins</span>
+              <span>{coins.toLocaleString()} Coins</span>
             </Link>
           </Button>
         )}

@@ -26,7 +26,7 @@ export default function LoginPage() {
     login();
   };
 
-  if (loading || user) {
+  if (loading || (!loading && user)) {
      return (
         <div className="flex justify-center items-center min-h-screen">
             <Loader2 className="h-16 w-16 animate-spin text-primary" />

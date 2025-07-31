@@ -44,7 +44,7 @@ export function StoryCard({ story }: StoryCardProps) {
                  <h3 className="font-headline text-md font-semibold leading-tight mb-1 truncate group-hover:text-primary">
                     {story.title}
                  </h3>
-                 <p className="text-muted-foreground text-sm">{formatReads(story.reads)} Reads</p>
+                 <p className="text-muted-foreground text-sm">{story.category}</p>
             </CardContent>
         </Card>
     </Link>

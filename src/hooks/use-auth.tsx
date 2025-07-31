@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { User } from '@/lib/types';
@@ -38,6 +39,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = () => {
     const today = new Date().toDateString();
     const lastLogin = localStorage.getItem('last_login_date');
+    
+    // For demo purposes, we'll set the user first.
+    localStorage.setItem('ms-stories-user', JSON.stringify(mockUser));
+    setUser(mockUser);
+    
     if (lastLogin !== today) {
        toast({
           title: 'Daily Bonus!',
@@ -46,8 +52,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
        localStorage.setItem('last_login_date', today);
     }
     
-    localStorage.setItem('ms-stories-user', JSON.stringify(mockUser));
-    setUser(mockUser);
     router.push('/');
   };
 
@@ -59,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, login, logout, loading }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }
