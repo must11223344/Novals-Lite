@@ -1,1 +1,6 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/content-continuation.ts';
+import '@/ai/flows/improve-writing.ts';
+import '@/ai/flows/suggest-story-title.ts';
