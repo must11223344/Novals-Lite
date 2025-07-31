@@ -1,9 +1,11 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
-import { WritingEditor } from '@/components/writing-editor';
+import { WritingEditor, type WritingEditorState } from '@/components/writing-editor';
+import { MyStories } from '@/components/my-stories';
 import { Loader2, PencilRuler, Bot, TrendingUp, HandCoins } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -30,12 +32,18 @@ export default function WritePage() {
     const { user, loading } = useAuth();
     const router = useRouter();
     const [activeTab, setActiveTab] = useState('studio');
+    const [storyToEdit, setStoryToEdit] = useState<WritingEditorState | undefined>(undefined);
 
     useEffect(() => {
         if (!loading && !user) {
             router.push('/login');
         }
     }, [user, loading, router]);
+    
+    const handleEditStory = (story: WritingEditorState) => {
+        setStoryToEdit(story);
+        setActiveTab('studio');
+    };
 
     if (loading) {
         return (
@@ -54,32 +62,15 @@ export default function WritePage() {
          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-4 max-w-2xl mx-auto">
                 <TabsTrigger value="studio">Studio</TabsTrigger>
-                <TabsTrigger value="creation">Creation</TabsTrigger>
+                <TabsTrigger value="creation">My Stories</TabsTrigger>
                 <TabsTrigger value="improve">Improve</TabsTrigger>
                 <TabsTrigger value="earn">Earn</TabsTrigger>
             </TabsList>
             <TabsContent value="studio" className="mt-6">
-                <WritingEditor />
+                <WritingEditor key={storyToEdit?.id} storyToEdit={storyToEdit} onClear={() => setStoryToEdit(undefined)} />
             </TabsContent>
             <TabsContent value="creation" className="mt-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Creation Tools</CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid md:grid-cols-2 gap-6">
-                       <FeatureCard
-                            icon={<PencilRuler className="h-8 w-8 text-primary" />}
-                            title="Start New Story"
-                            description="Begin a new story from scratch using the editor."
-                            onClick={() => setActiveTab('studio')}
-                        />
-                         <FeatureCard
-                            icon={<Bot className="h-8 w-8 text-primary" />}
-                            title="AI Story Generation"
-                            description="Generate a complete story based on a simple prompt."
-                        />
-                    </CardContent>
-                </Card>
+                <MyStories onEditStory={handleEditStory} />
             </TabsContent>
             <TabsContent value="improve" className="mt-6">
                  <Card>

@@ -1,13 +1,13 @@
 
 'use client';
 
-import { useState, useTransition, useRef } from 'react';
+import { useState, useTransition, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Lightbulb, Loader2, Sparkles, PencilRuler, Image as ImageIcon, Upload, Bot } from 'lucide-react';
+import { Lightbulb, Loader2, Sparkles, PencilRuler, Image as ImageIcon, Upload, Bot, XCircle } from 'lucide-react';
 import { suggestStoryTitle } from '@/ai/flows/suggest-story-title';
 import { contentContinuation } from '@/ai/flows/content-continuation';
 import { improveWriting } from '@/ai/flows/improve-writing';
@@ -25,12 +25,26 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 
-export function WritingEditor() {
+export interface WritingEditorState {
+    id: string;
+    title: string;
+    description: string;
+    content: string;
+    thumbnailUrl: string | null;
+}
+
+interface WritingEditorProps {
+    storyToEdit?: WritingEditorState;
+    onClear: () => void;
+}
+
+export function WritingEditor({ storyToEdit, onClear }: WritingEditorProps) {
   const [isSuggestingTitle, setIsSuggestingTitle] = useState(false);
   const [isContinuing, setIsContinuing] = useState(false);
   const [isImproving, setIsImproving] = useState(false);
   const [isGeneratingThumbnails, setIsGeneratingThumbnails] = useState(false);
 
+  const [storyId, setStoryId] = useState<string | null>(storyToEdit?.id ?? null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [content, setContent] = useState('');
@@ -39,6 +53,16 @@ export function WritingEditor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { toast } = useToast();
+  
+  useEffect(() => {
+    if (storyToEdit) {
+      setStoryId(storyToEdit.id);
+      setTitle(storyToEdit.title);
+      setDescription(storyToEdit.description);
+      setContent(storyToEdit.content);
+      setThumbnailPreview(storyToEdit.thumbnailUrl);
+    }
+  }, [storyToEdit]);
 
   const handleSuggestTitle = async () => {
     setIsSuggestingTitle(true);
@@ -159,6 +183,18 @@ export function WritingEditor() {
       reader.readAsDataURL(file);
     }
   };
+  
+  const clearForm = () => {
+    setTitle('');
+    setDescription('');
+    setContent('');
+    setThumbnailPreview(null);
+    setStoryId(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    onClear();
+  };
 
   const handleSubmit = () => {
     if (!title || !description || !content) {
@@ -171,21 +207,14 @@ export function WritingEditor() {
     }
 
     // In a real app, you'd send this to your backend.
-    console.log('Story Submitted:', { title, description, content, thumbnail: thumbnailPreview });
+    console.log('Story Submitted:', { id: storyId, title, description, content, thumbnail: thumbnailPreview });
 
     toast({
-      title: 'Story Submitted!',
-      description: 'Your story has been sent for approval. You earned 10 coins!',
+      title: storyId ? 'Story Updated!' : 'Story Submitted!',
+      description: `Your story has been sent for approval. ${!storyId ? 'You earned 10 coins!' : ''}`,
     });
 
-    // Reset form
-    setTitle('');
-    setDescription('');
-    setContent('');
-    setThumbnailPreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    clearForm();
   };
 
   const isAiBusy = isSuggestingTitle || isContinuing || isImproving || isGeneratingThumbnails;
@@ -193,8 +222,15 @@ export function WritingEditor() {
   return (
     <Card className="w-full max-w-4xl mx-auto shadow-lg">
       <CardHeader>
-        <CardTitle className="font-headline text-3xl flex items-center gap-2"><PencilRuler /> Create Your Story</CardTitle>
-        <CardDescription>Fill in the details below and use our AI assistant to help you write a masterpiece.</CardDescription>
+        <div className="flex justify-between items-start">
+            <div>
+                 <CardTitle className="font-headline text-3xl flex items-center gap-2"><PencilRuler /> {storyId ? 'Edit Your Story' : 'Create Your Story'}</CardTitle>
+                <CardDescription>Fill in the details below and use our AI assistant to help you write a masterpiece.</CardDescription>
+            </div>
+            {storyToEdit && (
+                 <Button variant="ghost" size="sm" onClick={clearForm}><XCircle className="mr-2" /> Clear Editor</Button>
+            )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -306,7 +342,7 @@ export function WritingEditor() {
         </Card>
       </CardContent>
       <CardFooter>
-        <Button size="lg" className="w-full font-bold" onClick={handleSubmit}>Submit for Approval</Button>
+        <Button size="lg" className="w-full font-bold" onClick={handleSubmit}>{storyId ? 'Update Story' : 'Submit for Approval'}</Button>
       </CardFooter>
     </Card>
   );
