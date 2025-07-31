@@ -38,7 +38,7 @@ export default function ProfilePage() {
                     <AvatarFallback className="text-3xl">{user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <CardTitle className="font-headline text-3xl">{user.name}</CardTitle>
-                <CardDescription>Joined on {new Date().toLocaleDateString()}</CardDescription>
+                <CardDescription>Joined on July 28, 2024</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
                 <div className="space-y-4">

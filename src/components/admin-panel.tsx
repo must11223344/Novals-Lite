@@ -178,7 +178,7 @@ export function AdminPanel() {
                  <TabsContent value="ads" className="mt-6">
                      <Card>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Code /> Ad Management</CardTitle>
+                             <CardTitle className="flex items-center gap-2"><Code /> Ad Management</CardTitle>
                             <CardDescription>Paste your ad code here. It will be displayed in the ad placeholder on the homepage.</CardDescription>
                         </CardHeader>
                         <CardContent>

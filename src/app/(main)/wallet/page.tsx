@@ -89,7 +89,7 @@ export default function WalletPage() {
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="font-headline text-3xl flex items-center gap-2"><Wallet /> My Wallet</CardTitle>
+                             <CardTitle className="font-headline text-3xl flex items-center gap-2"><Wallet /> My Wallet</CardTitle>
                             <CardDescription>View your balance, withdraw coins, and see your transaction history.</CardDescription>
                         </div>
                         <div className="text-right">
