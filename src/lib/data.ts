@@ -6,6 +6,7 @@ export const mockUser: User = {
   name: 'Alex Doe',
   email: 'mustakeem011220@gmail.com',
   avatarUrl: 'https://placehold.co/100x100.png',
+  createdAt: '2024-07-20T10:00:00Z',
 };
 
 export const categories: Category[] = [

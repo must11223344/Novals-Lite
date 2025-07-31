@@ -28,6 +28,12 @@ export default function ProfilePage() {
         </div>
     );
   }
+  
+  const joinDate = new Date(user.createdAt).toLocaleDate'String'('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   return (
     <div className="container max-w-2xl py-12">
@@ -38,7 +44,7 @@ export default function ProfilePage() {
                     <AvatarFallback className="text-3xl">{user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <CardTitle className="font-headline text-3xl">{user.name}</CardTitle>
-                <CardDescription>Joined on July 28, 2024</CardDescription>
+                <CardDescription>Joined on {joinDate}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
                 <div className="space-y-4">

@@ -55,9 +55,11 @@ export default function HomePage() {
   const popularStories = [...stories].sort((a, b) => b.reads - a.reads).slice(0, 8);
 
   useEffect(() => {
-    setContinueReadingStories([...stories].sort(() => 0.5 - Math.random()).slice(0, 8));
-    setTopPicks([...stories].sort(() => 0.5 - Math.random()).slice(0, 8));
-  }, []);
+    // Shuffle stories for the carousels on client-side to avoid hydration mismatch
+    const shuffledStories = [...stories].sort(() => 0.5 - Math.random());
+    setContinueReadingStories(shuffledStories.slice(0, 8));
+    setTopPicks(shuffledStories.slice(8, 16));
+  }, [user]);
 
 
   const isAdmin = user?.email === 'mustakeem011220@gmail.com';
