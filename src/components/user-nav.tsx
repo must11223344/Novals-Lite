@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -63,7 +64,7 @@ export function UserNav() {
             <span>Refer & Earn</span>
           </Link>
         </DropdownMenuItem>
-         {user.email === 'admin@example.com' && (
+         {user.email === 'mustakeem011220@gmail.com' && (
           <DropdownMenuItem asChild>
             <Link href="/admin">
               <Shield className="mr-2 h-4 w-4" />

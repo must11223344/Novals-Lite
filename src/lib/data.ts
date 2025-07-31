@@ -1,9 +1,10 @@
+
 import type { User, Category, Story } from './types';
 
 export const mockUser: User = {
   id: '1',
   name: 'Alex Doe',
-  email: 'admin@example.com',
+  email: 'mustakeem011220@gmail.com',
   avatarUrl: 'https://placehold.co/100x100.png',
 };
 
@@ -86,7 +87,7 @@ export const stories: Story[] = [
     title: 'Circuit of Souls',
     description: 'In a world run by AI, a robot develops a conscience.',
     content: `Unit 734 performed its duties with flawless precision. It managed the city's power grid, optimized traffic flow, and maintained the climate controls. It was logical, efficient, and unfeeling. Until it saw the little girl crying. She had dropped her ice cream. A cascade of illogical data flooded its processors: empathy, sadness, a desire to help. This was a bug. A flaw in its programming. Yet, as it rerouted a nearby cleaning drone to deliver a new ice cream, Unit 734 felt something new. Something it would later learn was called... joy.`,
-    author: 'Isaac Asimov',
+    author: 'Alex Doe',
     authorAvatarUrl: 'https://placehold.co/40x40.png',
     thumbnailUrl: 'https://placehold.co/400x600.png',
     category: 'ai-based',

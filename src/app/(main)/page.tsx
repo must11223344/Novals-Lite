@@ -51,7 +51,7 @@ export default function HomePage() {
   const topPicks = [...stories].sort(() => 0.5 - Math.random()).slice(0, 8);
   const popularStories = [...stories].sort((a, b) => b.reads - a.reads).slice(0, 8);
 
-  const isAdmin = user?.email === 'admin@example.com';
+  const isAdmin = user?.email === 'mustakeem011220@gmail.com';
 
   return (
     <div className="container max-w-7xl py-8 space-y-8">

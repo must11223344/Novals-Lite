@@ -19,7 +19,7 @@ const mockWithdrawals = [
 ];
 
 const mockUsers = [
-    { id: '1', name: 'Alex Doe', email: 'admin@example.com', coins: 1250 },
+    { id: '1', name: 'Alex Doe', email: 'mustakeem011220@gmail.com', coins: 1250 },
     { id: '2', name: 'Jane Smith', email: 'jane@example.com', coins: 5300 },
 ];
 

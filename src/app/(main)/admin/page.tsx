@@ -16,13 +16,13 @@ export default function AdminPage() {
         if (!loading) {
             if (!user) {
                 router.push('/login');
-            } else if (user.email !== 'admin@example.com') {
+            } else if (user.email !== 'mustakeem011220@gmail.com') {
                 router.push('/');
             }
         }
     }, [user, loading, router]);
 
-    if (loading || !user || user.email !== 'admin@example.com') {
+    if (loading || !user || user.email !== 'mustakeem011220@gmail.com') {
         return (
             <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
                 <Loader2 className="h-16 w-16 animate-spin text-primary" />
