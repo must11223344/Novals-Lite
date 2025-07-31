@@ -7,7 +7,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { User as UserIcon, Mail, Smartphone, Edit } from 'lucide-react';
+import { User as UserIcon, Mail, Smartphone, Edit, Loader2 } from 'lucide-react';
 
 
 export default function ProfilePage() {
@@ -22,7 +22,11 @@ export default function ProfilePage() {
 
 
   if (loading || !user) {
-    return <div className="container max-w-4xl py-8 text-center">Loading...</div>;
+    return (
+        <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
+            <Loader2 className="h-16 w-16 animate-spin text-primary" />
+        </div>
+    );
   }
 
   return (

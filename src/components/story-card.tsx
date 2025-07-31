@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -34,7 +35,7 @@ export function StoryCard({ story }: StoryCardProps) {
                         data-ai-hint="story fantasy"
                     />
                 </div>
-                <Badge className="absolute top-2 right-2 bg-blue-500/80 text-white border-none">
+                <Badge className="absolute top-2 right-2 bg-primary/80 text-primary-foreground border-none">
                   {formatReads(story.reads)} Reads
                 </Badge>
                 <Badge variant="secondary" className="absolute bottom-2 left-2 bg-black/50 text-white border-none text-xs">NEW CHAPTERS DAILY</Badge>

@@ -1,6 +1,7 @@
+
 'use client';
 
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { stories } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -30,13 +31,19 @@ export default function StoryPage({ params }: { params: { id: string } }) {
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (!story) {
+      return notFound();
+    }
+  }, [story]);
 
   useEffect(() => {
     if (user && story) {
-      const readStories = JSON.parse(localStorage.getItem('read_stories') || '[]');
+      const readStoriesKey = `read_stories_${user.id}`;
+      const readStories = JSON.parse(localStorage.getItem(readStoriesKey) || '[]');
       if (!readStories.includes(story.id)) {
         readStories.push(story.id);
-        localStorage.setItem('read_stories', JSON.stringify(readStories));
+        localStorage.setItem(readStoriesKey, JSON.stringify(readStories));
         setHasBeenRead(true);
         toast({
           title: 'Coins Earned!',
@@ -47,7 +54,7 @@ export default function StoryPage({ params }: { params: { id: string } }) {
   }, [user, story, toast]);
 
   if (!story) {
-    notFound();
+    return null;
   }
   
   const handleListen = async () => {
