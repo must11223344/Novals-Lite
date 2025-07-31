@@ -48,8 +48,12 @@ const generateStoryThumbnailsFlow = ai.defineFlow(
           prompt: generationPrompt,
           config: {
             responseModalities: ['TEXT', 'IMAGE'],
-            aspectRatio: '9:16',
           },
+          output: {
+            image: {
+              aspectRatio: '9:16',
+            }
+          }
         });
         return media.url;
       });
