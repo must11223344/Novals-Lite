@@ -21,4 +21,5 @@ export interface Story {
   category: string;
   tags: string[];
   createdAt: string;
+  reads: number;
 }
