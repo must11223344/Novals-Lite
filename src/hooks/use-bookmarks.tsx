@@ -43,7 +43,7 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
     });
   }, [toast]);
 
-  const isBookmarked = (id: string) => bookmarkedIds.includes(id);
+  const isBookmarked = useCallback((id: string) => bookmarkedIds.includes(id), [bookmarkedIds]);
 
   return (
     <BookmarksContext.Provider value={{ bookmarkedIds, isBookmarked, toggleBookmark }}>
