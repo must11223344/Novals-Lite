@@ -13,6 +13,8 @@ import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
 import { AdPlaceholder } from '@/components/ad-placeholder';
 import { AdminPanel } from '@/components/admin-panel';
+import { useEffect, useState } from 'react';
+import type { Story } from '@/lib/types';
 
 function StoryCarousel({ title, stories, moreLink = '#' }: { title: string; stories: any[]; moreLink?: string }) {
   return (
@@ -47,9 +49,16 @@ function StoryCarousel({ title, stories, moreLink = '#' }: { title: string; stor
 
 export default function HomePage() {
   const { user } = useAuth();
-  const continueReadingStories = [...stories].sort(() => 0.5 - Math.random()).slice(0, 8);
-  const topPicks = [...stories].sort(() => 0.5 - Math.random()).slice(0, 8);
+  const [continueReadingStories, setContinueReadingStories] = useState<Story[]>([]);
+  const [topPicks, setTopPicks] = useState<Story[]>([]);
+  
   const popularStories = [...stories].sort((a, b) => b.reads - a.reads).slice(0, 8);
+
+  useEffect(() => {
+    setContinueReadingStories([...stories].sort(() => 0.5 - Math.random()).slice(0, 8));
+    setTopPicks([...stories].sort(() => 0.5 - Math.random()).slice(0, 8));
+  }, []);
+
 
   const isAdmin = user?.email === 'mustakeem011220@gmail.com';
 
@@ -61,8 +70,8 @@ export default function HomePage() {
         <>
           <AdPlaceholder />
           <div className="space-y-12">
-            {user && <StoryCarousel title={`Continue Reading for ${user.name.split(' ')[0]}`} stories={continueReadingStories} />}
-            <StoryCarousel title="Top Picks for You" stories={topPicks} />
+            {user && continueReadingStories.length > 0 && <StoryCarousel title={`Continue Reading for ${user.name.split(' ')[0]}`} stories={continueReadingStories} />}
+            {topPicks.length > 0 && <StoryCarousel title="Top Picks for You" stories={topPicks} />}
             <StoryCarousel title="Popular on Pocket Novels" stories={popularStories} />
           </div>
         </>
