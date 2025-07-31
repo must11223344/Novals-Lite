@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useTransition, useRef } from 'react';
@@ -159,6 +160,34 @@ export function WritingEditor() {
     }
   };
 
+  const handleSubmit = () => {
+    if (!title || !description || !content) {
+      toast({
+        variant: 'destructive',
+        title: 'Incomplete Story',
+        description: 'Please fill out the title, description, and content.',
+      });
+      return;
+    }
+
+    // In a real app, you'd send this to your backend.
+    console.log('Story Submitted:', { title, description, content, thumbnail: thumbnailPreview });
+
+    toast({
+      title: 'Story Submitted!',
+      description: 'Your story has been sent for approval. Good luck!',
+    });
+
+    // Reset form
+    setTitle('');
+    setDescription('');
+    setContent('');
+    setThumbnailPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const isAiBusy = isSuggestingTitle || isContinuing || isImproving || isGeneratingThumbnails;
 
   return (
@@ -277,7 +306,7 @@ export function WritingEditor() {
         </Card>
       </CardContent>
       <CardFooter>
-        <Button size="lg" className="w-full font-bold">Submit for Approval</Button>
+        <Button size="lg" className="w-full font-bold" onClick={handleSubmit}>Submit for Approval</Button>
       </CardFooter>
     </Card>
   );
