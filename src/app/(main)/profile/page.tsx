@@ -29,7 +29,7 @@ export default function ProfilePage() {
     );
   }
   
-  const joinDate = new Date(user.createdAt).toLocaleDate'String'('en-US', {
+  const joinDate = new Date(user.createdAt).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
