@@ -14,7 +14,6 @@ import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 
 export function WritingEditor() {
-  const [isPending, startTransition] = useTransition();
   const [isSuggestingTitle, setIsSuggestingTitle] = useState(false);
   const [isContinuing, setIsContinuing] = useState(false);
   const [isImproving, setIsImproving] = useState(false);
@@ -27,88 +26,85 @@ export function WritingEditor() {
 
   const { toast } = useToast();
 
-  const handleSuggestTitle = () => {
-    startTransition(async () => {
-      setIsSuggestingTitle(true);
-      if (!content) {
-        toast({
-          title: 'Content is empty',
-          description: 'Please write some content before suggesting a title.',
-          variant: 'destructive',
-        });
-        setIsSuggestingTitle(false);
-        return;
-      }
-      try {
-        const result = await suggestStoryTitle({ storyContent: content });
-        setTitle(result.suggestedTitle);
-        toast({ title: 'Title suggestion successful!' });
-      } catch (error) {
-        toast({
-          title: 'Error suggesting title',
-          description: 'An unexpected error occurred.',
-          variant: 'destructive',
-        });
-      } finally {
-        setIsSuggestingTitle(false);
-      }
-    });
+  const handleSuggestTitle = async () => {
+    setIsSuggestingTitle(true);
+    if (!content) {
+      toast({
+        title: 'Content is empty',
+        description: 'Please write some content before suggesting a title.',
+        variant: 'destructive',
+      });
+      setIsSuggestingTitle(false);
+      return;
+    }
+    try {
+      const result = await suggestStoryTitle({ storyContent: content });
+      setTitle(result.suggestedTitle);
+      toast({ title: 'Title suggestion successful!' });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Error suggesting title',
+        description: 'An unexpected error occurred.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSuggestingTitle(false);
+    }
   };
 
-  const handleContinueWriting = () => {
-    startTransition(async () => {
-      setIsContinuing(true);
-      if (!content) {
-        toast({
-          title: 'Content is empty',
-          description: 'Please write some content to get a continuation.',
-          variant: 'destructive',
-        });
-        setIsContinuing(false);
-        return;
-      }
-      try {
-        const result = await contentContinuation({ context: content });
-        setContent((prev) => `${prev}\n\n${result.continuation}`);
-        toast({ title: 'Continuation added!' });
-      } catch (error) {
-        toast({
-          title: 'Error continuing writing',
-          description: 'An unexpected error occurred.',
-          variant: 'destructive',
-        });
-      } finally {
-        setIsContinuing(false);
-      }
-    });
+  const handleContinueWriting = async () => {
+    setIsContinuing(true);
+    if (!content) {
+      toast({
+        title: 'Content is empty',
+        description: 'Please write some content to get a continuation.',
+        variant: 'destructive',
+      });
+      setIsContinuing(false);
+      return;
+    }
+    try {
+      const result = await contentContinuation({ context: content });
+      setContent((prev) => `${prev}\n\n${result.continuation}`);
+      toast({ title: 'Continuation added!' });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Error continuing writing',
+        description: 'An unexpected error occurred.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsContinuing(false);
+    }
   };
   
-  const handleImproveWriting = () => {
-    startTransition(async () => {
-      setIsImproving(true);
-      if (!content) {
-        toast({
-          title: 'Content is empty',
-          description: 'Please write some content to improve.',
-          variant: 'destructive',
-        });
-        setIsImproving(false);
-        return;
-      }
-      try {
-        const result = await improveWriting({ storyContent: content });
-        setContent(result.improvedContent);
-        toast({ title: 'Your writing has been improved!' });
-      } catch (error) {
-         toast({
-          title: 'Error improving writing',
-          description: 'An unexpected error occurred.',
-          variant: 'destructive',
-        });
-      } finally {
-        setIsImproving(false);
-      }
-    });
+  const handleImproveWriting = async () => {
+    setIsImproving(true);
+    if (!content) {
+      toast({
+        title: 'Content is empty',
+        description: 'Please write some content to improve.',
+        variant: 'destructive',
+      });
+      setIsImproving(false);
+      return;
+    }
+    try {
+      const result = await improveWriting({ storyContent: content });
+      setContent(result.improvedContent);
+      toast({ title: 'Your writing has been improved!' });
+    } catch (error) {
+       console.error(error);
+       toast({
+        title: 'Error improving writing',
+        description: 'An unexpected error occurred.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsImproving(false);
+    }
   };
 
   const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
