@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'MS Stories World',
+  title: 'Ms Stories',
   description: 'Read, Write & Earn',
 };
 

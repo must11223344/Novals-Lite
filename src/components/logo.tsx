@@ -5,7 +5,7 @@ import Image from 'next/image';
 export function Logo({ className }: { className?: string }) {
   return (
     <div className={cn("flex items-center gap-2", className)}>
-        <Image src="/logo.svg" alt="MS Stories World" width={36} height={36} />
+        <Image src="/logo.svg" alt="Ms Stories" width={36} height={36} />
     </div>
   );
 }
